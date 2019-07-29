@@ -143,12 +143,17 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     is_very_benevolent.boolean = True
 
 
+class VillainInline(admin.StackedInline):
+    model = Villain
+
+
 class VillainAdmin(admin.ModelAdmin, ExportCsvMixin):
     list_display = ("name", "category", "origin")
     actions = ["export_as_csv"]
 
 
 class CategoryAdmin(admin.ModelAdmin):
+    inlines = [VillainInline]
     # remove the ‘Add’/’Delete’ button
     def has_add_permission(self, request):
         return False
