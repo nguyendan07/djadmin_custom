@@ -5,6 +5,8 @@ from django.contrib.auth.models import Group
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import path
+from django.forms import forms
+from django.shortcuts import render, redirect
 
 from .models import Category, Origin, Entity, Hero, Villain
 
@@ -75,6 +77,10 @@ class ExportCsvMixin:
     export_as_csv.short_description = "Export Selected"
 
 
+class CsvImportForm(forms.Form):
+    csv_file = forms.FileField()
+
+
 class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     list_display = ("name", "is_immortal", "category", "origin", "is_very_benevolent")
     list_filter = ("is_immortal", "category", "origin", IsVeryBenevolentFilter)
@@ -89,6 +95,7 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
         my_urls = [
             path('immortal/', self.set_immortal),
             path('mortal/', self.set_mortal),
+            path('import-csv/', self.import_csv),
         ]
         
         return my_urls + urls
@@ -103,6 +110,21 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
         self.model.objects.all().update(is_immortal=False)
         self.message_user(request, "All heroes are now mortal")
         return HttpResponseRedirect("../")
+    
+    # import CSV
+    def import_csv(self, request):
+        if request.method == "POST":
+            csv_file = request.FILES("csv_file")
+            reader = csv.reader(csv_file)
+            # Create Hero objects from passed in data
+            # ...
+            self.message_user(request, "Your csv file has been imported")
+            return redirect("..")
+        form = CsvImportForm()
+        payload = {"form": form}
+        return render(
+            request, "admin/csv_form.html", payload
+        )
 
     def mark_immortal(self, request, queryset):
         queryset.update(is_immortal=True)
