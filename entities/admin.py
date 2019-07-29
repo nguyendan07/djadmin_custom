@@ -148,7 +148,16 @@ class VillainAdmin(admin.ModelAdmin, ExportCsvMixin):
     actions = ["export_as_csv"]
 
 
-admin.site.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    # remove the ‘Add’/’Delete’ button
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+admin.site.register(Category, CategoryAdmin)
 # admin.site.register(Origin)
 admin.site.register(Origin, OriginAdmin)
 admin.site.register(Hero, HeroAdmin)
