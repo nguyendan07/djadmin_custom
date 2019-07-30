@@ -87,7 +87,7 @@ class HeroAcquaintanceInline(admin.TabularInline):
 
 
 class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
-    list_display = ("name", "is_immortal", "category", "origin", "is_very_benevolent")
+    list_display = ("name", "is_immortal", "category", "origin", "is_very_benevolent", 'children_display')
     list_filter = ("is_immortal", "category", "origin", IsVeryBenevolentFilter)
     # add additional actions
     actions = ["mark_immortal", "export_as_csv"]
@@ -149,6 +149,13 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
         if 'delete_selected' in actions:
             del actions['delete_selected']
         return actions
+    
+    def children_display(self, obj):
+        return ", ".join([
+            child.name for child in obj.children.all()
+        ])
+    
+    children_display.short_description = 'Children'
     
     # show “on” or “off” icons for calculated boolean fields
     is_very_benevolent.boolean = True
