@@ -8,7 +8,7 @@ from django.urls import path
 from django.forms import forms
 from django.shortcuts import render, redirect
 
-from .models import Category, Origin, Entity, Hero, Villain
+from .models import Category, Origin, Entity, Hero, Villain, HeroAcquaintance
 
 
 admin.site.site_header = 'UMSRA Admin'
@@ -81,6 +81,10 @@ class CsvImportForm(forms.Form):
     csv_file = forms.FileField()
 
 
+class HeroAcquaintanceInline(admin.TabularInline):
+    model = HeroAcquaintance
+
+
 class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     list_display = ("name", "is_immortal", "category", "origin", "is_very_benevolent")
     list_filter = ("is_immortal", "category", "origin", IsVeryBenevolentFilter)
@@ -89,6 +93,7 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
 
     # add Custom Action Buttons (not actions)
     change_list_template = "entities/heroes_changelist.html"
+    inlines = [HeroAcquaintanceInline]
 
     def get_urls(self):
         urls = super().get_urls()
