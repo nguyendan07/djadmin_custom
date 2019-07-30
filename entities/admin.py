@@ -94,6 +94,8 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     # add Custom Action Buttons (not actions)
     change_list_template = "entities/heroes_changelist.html"
     inlines = [HeroAcquaintanceInline]
+    # show larger number of rows on listview page
+    list_per_page = 25
 
     def get_urls(self):
         urls = super().get_urls()
