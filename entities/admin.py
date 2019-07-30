@@ -1,4 +1,5 @@
 import csv
+import sys
 
 from django.contrib import admin
 from django.contrib.auth.models import Group
@@ -95,7 +96,10 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     change_list_template = "entities/heroes_changelist.html"
     inlines = [HeroAcquaintanceInline]
     # show larger number of rows on listview page
-    list_per_page = 25
+    # list_per_page = 25
+
+    # disable django admin pagination
+    list_per_page = sys.maxsize
 
     def get_urls(self):
         urls = super().get_urls()
