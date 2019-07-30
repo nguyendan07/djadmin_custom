@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import path
 from django.forms import forms
 from django.shortcuts import render, redirect
+from django.utils.safestring import mark_safe
 
 from .models import Category, Origin, Entity, Hero, Villain, HeroAcquaintance
 
@@ -87,8 +88,9 @@ class HeroAcquaintanceInline(admin.TabularInline):
 
 
 class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
-    list_display = ("name", "is_immortal", "category", "origin", "is_very_benevolent", 'children_display')
+    list_display = ("name", "is_immortal", "category", "origin", "is_very_benevolent", 'children_display',)
     list_filter = ("is_immortal", "category", "origin", IsVeryBenevolentFilter)
+    readonly_fields = ("headshot_image",)
     # add additional actions
     actions = ["mark_immortal", "export_as_csv"]
 
@@ -143,6 +145,9 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     def is_very_benevolent(self, obj):
         return obj.benevolence_factor > 75
     
+    # show “on” or “off” icons for calculated boolean fields
+    is_very_benevolent.boolean = True
+    
     # remove the delete selected action
     def get_actions(self, request):
         actions = super().get_actions(request)
@@ -156,9 +161,14 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
         ])
     
     children_display.short_description = 'Children'
-    
-    # show “on” or “off” icons for calculated boolean fields
-    is_very_benevolent.boolean = True
+
+    def headshot_image(self, obj):
+        return mark_safe('<img src="{url}" width="{width}" height={height} />'.format(
+            url = obj.headshot.url,
+            width=obj.headshot.width,
+            height=obj.headshot.height,
+            )
+        )
 
 
 class VillainInline(admin.StackedInline):

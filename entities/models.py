@@ -55,6 +55,8 @@ class Hero(Entity):
 
     is_immortal = models.BooleanField(default=True)
 
+    headshots = models.ImageField(null=True, blank=True, upload_to="hero_headshots")
+
     benevolence_factor = models.PositiveSmallIntegerField(
         help_text="How benevolent this hero is?"
     )
