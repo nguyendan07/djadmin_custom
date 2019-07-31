@@ -106,6 +106,9 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     # disable django admin pagination
     list_per_page = sys.maxsize
 
+    # date based filtering
+    date_hierarchy = 'added_on'
+
     def save_model(self, request, obj, form, change):
         if not obj.pk:
             obj.added_by = request.user
@@ -186,6 +189,8 @@ class VillainInline(admin.StackedInline):
 class VillainAdmin(admin.ModelAdmin, ExportCsvMixin):
     list_display = ("name", "category", "origin")
     actions = ["export_as_csv"]
+
+    date_hierarchy = 'added_on'
 
 
 class CategoryAdmin(admin.ModelAdmin):
