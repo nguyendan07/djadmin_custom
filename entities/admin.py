@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import path
-from django.forms import forms
+from django.forms import forms, models
 from django.shortcuts import render, redirect
 from django.utils.safestring import mark_safe
 
@@ -16,6 +16,11 @@ from .models import Category, Origin, Entity, Hero, Villain, HeroAcquaintance
 admin.site.site_header = 'UMSRA Admin'
 admin.site.site_title = 'UMSRA Admin Portal'
 admin.site.index_title = 'Welcome to UMSRA Researcher Portal'
+
+
+class CategoryChoiceField(models.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return "Category: {}".format(obj.name)
 
 
 class OriginAdmin(admin.ModelAdmin):
@@ -197,7 +202,8 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     #  filter FK dropdown values in django admin
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'category':
-            kwargs["queryset"] = Category.objects.filter(name__in=["God", "Demi God"])
+            # kwargs["queryset"] = Category.objects.filter(name__in=["God", "Demi God"])
+            return CategoryChoiceField(queryset=Category.objects.all())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
