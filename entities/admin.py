@@ -93,7 +93,7 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     # mark a field as readonly
     # readonly_fields = ["headshot_image", "father", "mother", "spouse"]
 
-    # show an uneditable field
+    # show an uneditable field.
     readonly_fields = ["headshot_image", "added_on"]
     # add additional actions
     actions = ["mark_immortal", "export_as_csv"]
