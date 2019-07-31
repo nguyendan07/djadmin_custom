@@ -93,6 +93,9 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     readonly_fields = ("headshot_image",)
     # add additional actions
     actions = ["mark_immortal", "export_as_csv"]
+    
+    # hide the 'added_by' field to not show up on the change form
+    exclude = ['added_by',]
 
     # add Custom Action Buttons (not actions)
     change_list_template = "entities/heroes_changelist.html"
@@ -103,6 +106,11 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     # disable django admin pagination
     list_per_page = sys.maxsize
 
+    def save_model(self, request, obj, form, change):
+        if not obj.pk:
+            obj.added_by = request.user
+        super().save_model(request, obj, form, change)
+    
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
