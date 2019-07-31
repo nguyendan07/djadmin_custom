@@ -121,8 +121,7 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     raw_id_fields = ["category"]
 
     def save_model(self, request, obj, form, change):
-        if not obj.pk:
-            obj.added_by = request.user
+        obj.added_by = request.user
         super().save_model(request, obj, form, change)
     
     def get_urls(self):
