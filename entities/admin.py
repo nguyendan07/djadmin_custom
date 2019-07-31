@@ -10,7 +10,7 @@ from django.forms import forms, models
 from django.shortcuts import render, redirect
 from django.utils.safestring import mark_safe
 
-from .models import Category, Origin, Entity, Hero, Villain, HeroAcquaintance
+from .models import Category, Origin, Entity, Hero, Villain, HeroAcquaintance, HeroProxy
 
 
 admin.site.site_header = 'UMSRA Admin'
@@ -213,6 +213,10 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+class HeroProxyAdmin(admin.ModelAdmin, ExportCsvMixin):
+    list_display = ("name", "is_immortal", "category", "origin",)
+
+
 class VillainInline(admin.StackedInline):
     model = Villain
 
@@ -250,6 +254,7 @@ admin.site.register(Category, CategoryAdmin)
 # admin.site.register(Origin)
 admin.site.register(Origin, OriginAdmin)
 admin.site.register(Hero, HeroAdmin)
+admin.site.register(HeroProxy, HeroProxyAdmin)
 admin.site.register(Villain, VillainAdmin)
 
 admin.site.unregister(Group)

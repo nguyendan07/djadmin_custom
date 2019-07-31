@@ -79,6 +79,11 @@ class Hero(Entity):
     )
 
 
+class HeroProxy(Hero):
+
+    class Meta:
+        proxy = True
+
 class HeroAcquaintance(models.Model):
     "Non family contacts of a Hero"
     hero = models.OneToOneField(Hero, on_delete=models.CASCADE)
