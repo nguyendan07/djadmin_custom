@@ -188,9 +188,15 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     # make a field editable while creating, but read only in existing objects
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ["name", "category"]
+            return ["name"]
         else:
             return []
+    
+    #  filter FK dropdown values in django admin
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'category':
+            kwargs["queryset"] = Category.objects.filter(name__in=["God", "Demi God"])
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class VillainInline(admin.StackedInline):
