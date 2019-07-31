@@ -184,6 +184,13 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
             height=obj.headshot.height,
             )
         )
+    
+    # make a field editable while creating, but read only in existing objects
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ["name", "category"]
+        else:
+            return []
 
 
 class VillainInline(admin.StackedInline):
