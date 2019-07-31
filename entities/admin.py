@@ -113,6 +113,8 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     # date based filtering
     date_hierarchy = 'added_on'
 
+    raw_id_fields = ["category"]
+
     def save_model(self, request, obj, form, change):
         if not obj.pk:
             obj.added_by = request.user
