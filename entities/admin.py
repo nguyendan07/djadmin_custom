@@ -90,7 +90,8 @@ class HeroAcquaintanceInline(admin.TabularInline):
 class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
     list_display = ("name", "is_immortal", "category", "origin", "is_very_benevolent", 'children_display',)
     list_filter = ("is_immortal", "category", "origin", IsVeryBenevolentFilter)
-    readonly_fields = ("headshot_image",)
+    # mark a field as readonly
+    readonly_fields = ["headshot_image", "father", "mother", "spouse"]
     # add additional actions
     actions = ["mark_immortal", "export_as_csv"]
     
