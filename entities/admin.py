@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import path
+from django.urls import path, reverse
 from django.forms import forms, models
 from django.shortcuts import render, redirect
 from django.utils.safestring import mark_safe
@@ -178,9 +178,15 @@ class HeroAdmin(admin.ModelAdmin, ExportCsvMixin):
         return actions
     
     def children_display(self, obj):
-        return ", ".join([
-            child.name for child in obj.children.all()
+        display_text = ", ".join(["<a href={}>{}</a>".format(
+                    reverse('admin:{}_{}_change'.format(obj._meta.app_label, obj._meta.model_name),
+                    args=(child.pk,)),
+                child.name)
+             for child in obj.children.all()
         ])
+        if display_text:
+            return mark_safe(display_text)
+        return "-"
     
     children_display.short_description = 'Children'
 
